@@ -1,0 +1,21 @@
+## DO NOT EDIT!
+# This file was provisioned by Terraform
+# File origin: https://github.com/Arrow-air/tf-github/tree/main/src/templates/tf-all/.gitignore
+
+# Terraform cache files
+*/.terraform/**
+terraform.tfstate*
+
+# Terraform local files
+src/local.auto.tfvars
+src/*.plan
+
+# Don't add vscode or idea meta files
+.vscode
+.idea
+
+# Don't add DS_Store
+.DS_Store
+
+# Generated files
+*.env
