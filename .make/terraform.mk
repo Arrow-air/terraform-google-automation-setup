@@ -13,8 +13,9 @@ TF_IMAGE_TAG    ?= 3.0.0-v1.4.2-1
 TF_WORKSPACE    ?= default
 TF_FLAGS        ?=
 TF_STDOUT       ?= &1
+TF_SOURCE_PATH  ?= $(SOURCE_PATH)/src
 
-TF_STATE_FILE := $(SOURCE_PATH)/src/.terraform/terraform.tfstate
+TF_STATE_FILE := $(TF_SOURCE_PATH)/.terraform/terraform.tfstate
 JQ            := $(shell command -v jq 2> /dev/null)
 ifneq ("$(wildcard $(TF_STATE_FILE))","")
 	ifdef JQ
@@ -32,7 +33,7 @@ tf_run = docker run \
 	--workdir=/opt/ \
 	--rm \
 	--user `id -u`:`id -g` \
-	-v "${SOURCE_PATH}/src/:/opt/" \
+	-v "${TF_SOURCE_PATH}:/opt/" \
 	-v "${GOOGLE_APPLICATION_CREDENTIALS}:/tmp/credentials.json" \
 	-e "GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json" \
 	-e "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}" \
