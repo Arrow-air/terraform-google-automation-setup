@@ -1,0 +1,7 @@
+BUCKETNAME
+cicd
+googleapis
+oidc
+owlot
+tfstate
+
