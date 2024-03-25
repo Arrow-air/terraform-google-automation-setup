@@ -96,7 +96,7 @@ module "terraform_sa" {
       roles = {
         "iam.serviceAccountTokenCreator" = {
           members = merge({
-            (module.identity_provider_sa.map["github-actions"].email) = "serviceAccount",
+            format("github-actions@%s.iam.gserviceaccount.com", var.cicd_project_id) = "serviceAccount"
             }, try(var.deployer_token_creators, {})
           )
         }
@@ -107,13 +107,15 @@ module "terraform_sa" {
       roles = {
         "iam.serviceAccountTokenCreator" = {
           members = merge({
-            (module.identity_provider_sa.map["github-actions"].email) = "serviceAccount",
+            format("github-actions@%s.iam.gserviceaccount.com", var.cicd_project_id) = "serviceAccount"
             }, try(var.planner_token_creators, {})
           )
         }
       }
     }
   }
+
+  depends_on = [module.identity_provider_sa]
 }
 
 # ==========================================

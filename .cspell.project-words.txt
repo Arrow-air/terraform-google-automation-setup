@@ -5,3 +5,4 @@ oidc
 owlot
 tfstate
 
+gserviceaccount
