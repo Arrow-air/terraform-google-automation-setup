@@ -42,7 +42,10 @@ variable "cicd_project_id" {
   description = "CICD GCP Project ID"
   type        = string
 }
-
+variable "cicd_project_number" {
+  description = "CICD GCP Project Number"
+  type        = string
+}
 variable "workload_identity_pool_name" {
   description = "The name of the workload identity to be used for GitHub SA assignment"
   type        = string

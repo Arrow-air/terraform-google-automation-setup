@@ -70,7 +70,7 @@ module "identity_provider_sa" {
       roles = {
         "iam.workloadIdentityUser" = {
           members = {
-            format("//iam.googleapis.com/%s/attribute.repository/%s/%s", var.workload_identity_pool_name, var.github_owner, var.repo_name) = "principalSet"
+            format("//iam.googleapis.com/projects/%s/locations/global/workloadIdentityPools/%s/attribute.repository/%s/%s", var.cicd_project_number, var.workload_identity_pool_name, var.github_owner, var.repo_name) = "principalSet"
           }
         }
       }
@@ -95,10 +95,7 @@ module "terraform_sa" {
       description = "Allow terraform deployments from automation into the specified project."
       roles = {
         "iam.serviceAccountTokenCreator" = {
-          members = merge({
-            format("github-actions@%s.iam.gserviceaccount.com", var.cicd_project_id) = "serviceAccount"
-            }, try(var.deployer_token_creators, {})
-          )
+          members = try(var.deployer_token_creators, {})
         }
       }
     }
@@ -106,10 +103,7 @@ module "terraform_sa" {
       description = "Allow terraform plan from automation into the specified project."
       roles = {
         "iam.serviceAccountTokenCreator" = {
-          members = merge({
-            format("github-actions@%s.iam.gserviceaccount.com", var.cicd_project_id) = "serviceAccount"
-            }, try(var.planner_token_creators, {})
-          )
+          members = try(var.planner_token_creators, {})
         }
       }
     }
