@@ -57,8 +57,9 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
 }
 
 module "identity_provider_sa" {
-  source  = "owlot/service-account/google"
-  version = "~> 0.1.1"
+  source = "git::https://github.com/owlot/terraform-google-service-account?ref=v0.2.0"
+  #source  = "owlot/service-account/google"
+  #version = "~> 0.2"
 
   project     = var.project
   environment = var.environment
@@ -70,7 +71,10 @@ module "identity_provider_sa" {
       roles = {
         "iam.workloadIdentityUser" = {
           members = {
-            format("//iam.googleapis.com/projects/%s/locations/global/workloadIdentityPools/%s/attribute.repository/%s/%s", var.cicd_project_number, var.workload_identity_pool_name, var.github_owner, var.repo_name) = "principalSet"
+            "identity_pool" = {
+              email = format("//iam.googleapis.com/projects/%s/locations/global/workloadIdentityPools/%s/attribute.repository/%s/%s", var.cicd_project_number, var.workload_identity_pool_name, var.github_owner, var.repo_name),
+              type  = "principalSet"
+            }
           }
         }
       }
@@ -82,8 +86,9 @@ module "identity_provider_sa" {
 # Set up Terraform required Service Accounts
 # ==========================================
 module "terraform_sa" {
-  source  = "owlot/service-account/google"
-  version = "~> 0.1.1"
+  source = "git::https://github.com/owlot/terraform-google-service-account?ref=v0.2.0"
+  #source  = "owlot/service-account/google"
+  #version = "~> 0.2"
 
   project     = var.project
   environment = var.environment

@@ -53,14 +53,20 @@ variable "workload_identity_pool_name" {
 
 variable "deployer_token_creators" {
   description = "Map of entities which should be allowed to generate tokens for the Terraform SA"
-  type        = map(string)
-  default     = {}
+  type = map(object({
+    email = string
+    type  = string
+  }))
+  default = {}
 }
 
 variable "planner_token_creators" {
   description = "Map of entities which should be allowed to generate tokens for the Terraform Planner SA"
-  type        = map(string)
-  default     = {}
+  type = map(object({
+    email = string
+    type  = string
+  }))
+  default = {}
 }
 
 variable "state_bucket_roles" {
