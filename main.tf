@@ -57,9 +57,8 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
 }
 
 module "identity_provider_sa" {
-  source = "git::https://github.com/owlot/terraform-google-service-account?ref=v0.2.0"
-  #source  = "owlot/service-account/google"
-  #version = "~> 0.2"
+  source  = "owlot/service-account/google"
+  version = "~> 0.2"
 
   project     = var.project
   environment = var.environment
@@ -86,9 +85,8 @@ module "identity_provider_sa" {
 # Set up Terraform required Service Accounts
 # ==========================================
 module "terraform_sa" {
-  source = "git::https://github.com/owlot/terraform-google-service-account?ref=v0.2.0"
-  #source  = "owlot/service-account/google"
-  #version = "~> 0.2"
+  source  = "owlot/service-account/google"
+  version = "~> 0.2"
 
   project     = var.project
   environment = var.environment
@@ -99,16 +97,32 @@ module "terraform_sa" {
     (local.tf_account) = {
       description = "Allow terraform deployments from automation into the specified project."
       roles = {
-        "iam.serviceAccountTokenCreator" = {
-          members = try(var.deployer_token_creators, {})
+        "roles/iam.serviceAccountTokenCreator" = {
+          members = merge(
+            {
+              "github-actions" = {
+                email = module.identity_provider_sa.map["github-actions"].email
+                type  = "serviceAccount"
+              }
+            },
+            try(var.deployer_token_creators, {})
+          )
         }
       }
     }
     (local.tf_ro_account) = {
       description = "Allow terraform plan from automation into the specified project."
       roles = {
-        "iam.serviceAccountTokenCreator" = {
-          members = try(var.planner_token_creators, {})
+        "roles/iam.serviceAccountTokenCreator" = {
+          members = merge(
+            {
+              "github-actions" = {
+                email = module.identity_provider_sa.map["github-actions"].email
+                type  = "serviceAccount"
+              }
+            },
+            try(var.planner_token_creators, {})
+          )
         }
       }
     }
